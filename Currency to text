@@ -1,0 +1,76 @@
+min_value = 0
+max_value = 99999999.99
+num_dict = { 0 : 'zero', 1 : 'one', 2 : 'two', 3 : 'three', 4 : 'four', 5 : 'five',
+          6 : 'six', 7 : 'seven', 8 : 'eight', 9 : 'nine', 10 : 'ten',
+          11 : 'eleven', 12 : 'twelve', 13 : 'thirteen', 14 : 'fourteen',
+          15 : 'fifteen', 16 : 'sixteen', 17 : 'seventeen', 18 : 'eighteen',
+          19 : 'nineteen', 20 : 'twenty',
+          30 : 'thirty', 40 : 'forty', 50 : 'fifty', 60 : 'sixty',
+          70 : 'seventy', 80 : 'eighty', 90 : 'ninety' }
+hundred=100
+thousand=hundred*10
+lakh=thousand*100
+crore=lakh*10
+
+def currency_to_text(given_num):
+
+    if (given_num < 20):
+        return num_dict[given_num]
+
+    if (given_num < 100):
+        if given_num % 10 == 0:
+             return num_dict[given_num]
+        else:
+             return num_dict[given_num // 10 * 10] + '-' + num_dict[given_num % 10]
+
+    if (given_num < hundred):
+        if given_num % 10 == 0:
+             return num_dict[given_num // 10] + ' hundred'
+        else:
+             return num_dict[given_num // 10] + ' hundred ' + currency_to_text(given_num % 10)
+
+    if (given_num < thousand):
+        if given_num % hundred == 0:
+             return currency_to_text(given_num // hundred) + ' hundred'
+        else:
+             return currency_to_text(given_num // hundred) + ' hundred, ' + currency_to_text(given_num % hundred)
+
+    if (given_num < lakh):
+        if (given_num % thousand) == 0:
+             return currency_to_text(given_num // thousand) + ' thousand'
+        else:
+             return currency_to_text(given_num // thousand) + ' thousand, ' + currency_to_text(given_num % thousand)
+
+    if (given_num < crore):
+        if (given_num % lakh) == 0:
+             return currency_to_text(given_num // lakh) + ' lakh'
+        else:
+             return currency_to_text(given_num // lakh) + ' lakh, ' + currency_to_text(given_num % lakh)
+
+    if (given_num % crore == 0):
+         return currency_to_text(given_num // crore) + ' crore'
+    else:
+         return currency_to_text(given_num // crore) + ' crore, ' + currency_to_text(given_num % crore)
+
+def get_text_from_currency(number):
+    try:
+        if (number < min_value or number > max_value): return False
+        decimal = str(number-int(number))[2:4]
+        if(decimal == ''): decimal = 0
+        result = currency_to_text(int(number))
+        if (result):
+            if (int(decimal)>0):
+                return result+ ' ' + str(decimal) + '/100 only'
+            else:
+                return result
+        return 'Not applicable'
+    except:
+        return 'Not applicable'
+print('value',get_text_from_currency(4600525.23))
+
+# Approach (Recursion):
+# 1. First seperating the value and decimal part 
+# 2. Checking the edge case of the number with max and min value , then returning if not in range.
+# 3. Having prefined values for calculating and creating the dictionary for text.
+# 4. Running recusrion algorithm with seperators setting up the result.
+# 5. At the end of recursion , returning the result and appending the decimal part if applicable
